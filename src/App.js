@@ -1,19 +1,19 @@
-import logo from "./logo.svg";
-import "./App.css";
-import { useState } from "react";
-import { ProductsTable } from "./components/ProductsTable";
+import './App.css';
+import { useState } from 'react';
+import { ProductsTable } from './components/ProductsTable';
 
 const products = [
-  { category: "Fruits", price: "$1", stocked: true, name: "Apple" },
-  { category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit" },
-  { category: "Fruits", price: "$2", stocked: false, name: "Passionfruit" },
-  { category: "Vegetables", price: "$2", stocked: true, name: "Spinach" },
-  { category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" },
-  { category: "Vegetables", price: "$1", stocked: true, name: "Peas" },
+  { category: 'Fruits', price: '$1', stocked: true, name: 'Apple' },
+  { category: 'Fruits', price: '$1', stocked: true, name: 'Dragonfruit' },
+  { category: 'Fruits', price: '$2', stocked: false, name: 'Passionfruit' },
+  { category: 'Vegetables', price: '$2', stocked: true, name: 'Spinach' },
+  { category: 'Vegetables', price: '$4', stocked: false, name: 'Pumpkin' },
+  { category: 'Vegetables', price: '$1', stocked: true, name: 'Peas' },
 ];
 
 function App() {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const [inStockOnly, setInStockOnly] = useState(false);
 
@@ -25,28 +25,43 @@ function App() {
     setInStockOnly(e.target.checked);
   };
 
+  const selectCategory = (e) => {
+    setSelectedCategory(e.target.value);
+  };
+
+  const filteredProducts = products
+    .filter((product) => {
+      if (selectedCategory === '') {
+        return true;
+      }
+      return product.category === selectedCategory;
+    })
+    .filter((product) => {
+      return product.name.includes(search);
+    });
+
   return (
-    <div className="app">
-      <input onChange={handleChange} value={search} placeholder="Search ..." />
-      <div className="flex justify-between">
+    <div className='app'>
+      <input onChange={handleChange} value={search} placeholder='Search ...' />
+      <div className='flex justify-between'>
         <div>
           <input
-            type="checkbox"
+            type='checkbox'
             onChange={toggleInStock}
             checked={inStockOnly}
-            id="checkbox"
+            id='checkbox'
           />
-          <label htmlFor="checkbox">Show only products in stock</label>
+          <label htmlFor='checkbox'>Show only products in stock</label>
         </div>
         <div>
-          <select>
-            <option value="">All</option>
-            <option value="Fruits">Fruits</option>
-            <option value="Vegetables">Vegetables</option>
+          <select value={selectedCategory} onChange={selectCategory}>
+            <option value=''>All</option>
+            <option value='Fruits'>Fruits</option>
+            <option value='Vegetables'>Vegetables</option>
           </select>
         </div>
       </div>
-      <ProductsTable category="Fruits" products={products} />
+      <ProductsTable category={selectedCategory} products={filteredProducts} />
     </div>
   );
 }
